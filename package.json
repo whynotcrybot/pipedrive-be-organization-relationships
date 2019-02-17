@@ -1,0 +1,26 @@
+{
+  "name": "pipedrive",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node src/app",
+    "dev": "cross-env NODE_ENV=dev TZ=utc nodemon src/app",
+    "test": "cross-env NODE_ENV=test TZ=utc ./node_modules/.bin/mocha test",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cors": "^2.8.4",
+    "express": "~4.15.2",
+    "http-status": "^1.2.0",
+    "morgan": "~1.8.1",
+    "mysql": "^2.16.0"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "eslint": "^5.7.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "nodemon": "^1.18.4"
+  }
+}
