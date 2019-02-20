@@ -14,7 +14,6 @@ addDatabase(app);
 
 app.use('/', routes);
 
-console.log(' PORT', PORT)
 if (!module.parent) {
   app.listen(PORT, (err) => {
     if (err) console.error('Error occured', err);

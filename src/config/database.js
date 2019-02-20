@@ -17,7 +17,6 @@ module.exports = (app) => {
       console.log('connecting error', err);
       return;
     }
-    console.log('connecting success');
   });
 
   connection.query = util.promisify(connection.query);
