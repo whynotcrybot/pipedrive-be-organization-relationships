@@ -22,7 +22,7 @@ services:
       - mysql
     ports:
       - "3000:3000"
-    command: ./scripts/wait-for-it.sh db:3306 -- npm run test
+    command: ./scripts/wait-for-it.sh mysql:3306 -- npm run test
     environment:
       DB_HOST: mysql
       DB_USER: root

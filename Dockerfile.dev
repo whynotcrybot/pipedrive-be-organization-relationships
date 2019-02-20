@@ -6,4 +6,4 @@ WORKDIR /app
 ADD package.json package-lock.json /app/
 RUN npm i
 
-CMD ./scripts/wait-for-it.sh db:3306 -- npm run dev
+CMD ./scripts/wait-for-it.sh mysql:3306 -- npm run dev
