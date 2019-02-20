@@ -1,0 +1,30 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pipedrive
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+    logging:
+      driver: none
+
+  server:
+    tty: true
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+    ports:
+      - "3000:3000"
+    command: ./scripts/wait-for-it.sh db:3306 -- npm run test
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: pipedrive
