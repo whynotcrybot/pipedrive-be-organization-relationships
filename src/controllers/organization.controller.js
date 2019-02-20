@@ -16,8 +16,12 @@ async function getOrganization(req, res, next) {
   }
 }
 
-async function traverse(db, parent) {
+async function traverse(db, parent, first = false) {
   try {
+    if (first) {
+      await db.beginTransaction();
+    }
+
     // Insert current object
     await db.query('INSERT INTO organization SET name=?', parent.org_name);
     
@@ -98,7 +102,7 @@ async function createOrganization(req, res, next) {
       ],
     };
 
-    await traverse(db, request);
+    await traverse(db, request, true);
 
     return res.status(HTTPStatus.OK).json(request);
   } catch (err) {
