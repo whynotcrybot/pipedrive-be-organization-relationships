@@ -6,6 +6,7 @@ const router = new Router();
 
 router
   .get('/', organizationController.getOrganization)
-  .post('/', organizationController.createOrganization);
+  .post('/', organizationController.createOrganization)
+  .delete('/', organizationController.flushOrganizations);
 
 module.exports = router;
