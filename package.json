@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node src/app",
     "dev": "cross-env NODE_ENV=dev TZ=utc nodemon src/app",
-    "test": "cross-env NODE_ENV=test TZ=utc jest --watchAll",
+    "test": "cross-env NODE_ENV=test TZ=utc jest --watchAll --runInBand",
     "lint": "eslint src/"
   },
   "dependencies": {
