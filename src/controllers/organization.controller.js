@@ -20,8 +20,8 @@ async function traverse(db, parent, first = false) {
     }
 
     // Insert current object
-    await db.query('INSERT INTO organization SET name=?', parent.org_name);
-    
+    await db.query('INSERT IGNORE INTO organization SET name=?', parent.org_name);
+
     const { daughters } = parent;
 
     // Traverse daughters
