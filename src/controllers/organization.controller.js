@@ -51,7 +51,6 @@ async function traverse(db, data) {
 
     await db.commit();
   } catch (e) {
-    console.log('ERROR', e);
     await db.rollback();
 
     return false;
