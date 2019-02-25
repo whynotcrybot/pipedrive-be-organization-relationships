@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const HTTPStatus = require('http-status');
 
 async function getOrganization(req, res, next) {
@@ -13,54 +14,57 @@ async function getOrganization(req, res, next) {
   }
 }
 
-async function traverse(db, parent, first = false) {
+async function traverse(db, data) {
   try {
-    if (first) {
-      await db.beginTransaction();
-    }
+    const queue = [data];
 
-    // Insert current object
-    await db.query('INSERT IGNORE INTO organization SET name=?', parent.org_name);
+    await db.beginTransaction();
 
-    const { daughters } = parent;
+    // eslint-disable-next-line
+    for (const organization of queue) {
+      // Insert current object
+      await db.query('INSERT IGNORE INTO organization SET name=?', organization.org_name);
 
-    // Traverse daughters
-    if (daughters) {
-      const promises = [];
+      // Traverse daughters
+      if (organization.daughters) {
+        const { daughters } = organization;
+        const promises = [];
 
-      daughters.forEach((daughter) => {
-        // Set sister relationships
-        const sisters = daughters.filter(sister => sister.org_name !== daughter.org_name);
-        sisters.forEach((sister) => {
-          promises.push(db.query(`INSERT INTO organizations_relationship (organization_id, linked_organization_id, relationship_type) VALUES ("${daughter.org_name}", "${sister.org_name}", "sister")`));
+        daughters.forEach((daughter) => {
+          // Set sister relationships
+          const sisters = daughters.filter(sister => sister.org_name !== daughter.org_name);
+          sisters.forEach((sister) => {
+            promises.push(db.query(`INSERT INTO organizations_relationship (organization_id, linked_organization_id, relationship_type) VALUES ("${daughter.org_name}", "${sister.org_name}", "sister")`));
+          });
+
+          // Set parent and daughter relationship
+          promises.push(db.query(`INSERT INTO organizations_relationship (organization_id, linked_organization_id, relationship_type) VALUES ("${organization.org_name}", "${daughter.org_name}", "parent")`));
+          promises.push(db.query(`INSERT INTO organizations_relationship (organization_id, linked_organization_id, relationship_type) VALUES ("${daughter.org_name}", "${organization.org_name}", "daughter")`));
+
+          // Traverse daughter
+          queue.push(daughter);
         });
 
-        // Set parent and daughter relationship
-        promises.push(db.query(`INSERT INTO organizations_relationship (organization_id, linked_organization_id, relationship_type) VALUES ("${parent.org_name}", "${daughter.org_name}", "parent")`));
-        promises.push(db.query(`INSERT INTO organizations_relationship (organization_id, linked_organization_id, relationship_type) VALUES ("${daughter.org_name}", "${parent.org_name}", "daughter")`));
-
-        // Traverse daughter
-        promises.push(traverse(db, daughter));
-      });
-
-      await Promise.all(promises);
+        await Promise.all(promises);
+      }
     }
 
-    if (first) {
-      await db.commit();
-    }
-    return true;
+    await db.commit();
   } catch (e) {
     console.log('ERROR', e);
     await db.rollback();
+
+    return false;
   }
+
+  return true;
 }
 
 async function createOrganization(req, res, next) {
   try {
     const { db, body } = req;
 
-    await traverse(db, body, true);
+    await traverse(db, body);
 
     const response = {
       success: true,
