@@ -79,8 +79,23 @@ async function flushOrganizations(req, res, next) {
   }
 }
 
+async function generateOrganizations(req, res, next) {
+  try {
+    const { db, params } = req;
+    const { amount } = params;
+
+    await generateAndSave(db, amount);
+
+    return res.sendStatus(HTTPStatus.OK);
+  } catch (err) {
+    err.status = HTTPStatus.BAD_REQUEST;
+    return next(err);
+  }
+}
+
 module.exports = {
   getOrganization,
   createOrganization,
   flushOrganizations,
+  generateOrganizations,
 };
