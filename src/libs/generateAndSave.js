@@ -29,19 +29,21 @@ async function generateAndSave(db, requestedAmount) {
 
       // Generate random amount of daughters
       if (amount > 0) {
+        // Obtain random number
         const daughtersToGenerate = getRandomInt(0, Math.ceil(amount / 8));
-        const daughters = new Array(daughtersToGenerate)
-          .fill()
-          .map(() => [getName(), organization]);
 
         amount -= daughtersToGenerate;
 
+        // Find organization with max number of daughters
         if (daughtersToGenerate > maxDaughters) {
           maxDaughters = daughtersToGenerate;
           maxDaughtersParent = organization;
         }
 
-        daughters.forEach(daughter => queue.push(daughter));
+        // Push daughters to queue
+        for (let i = 0; i < daughtersToGenerate; i += 1) {
+          queue.push([getName(), organization]);
+        }
       }
     }
 
