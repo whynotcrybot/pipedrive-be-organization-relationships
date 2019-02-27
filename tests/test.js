@@ -74,16 +74,16 @@ describe('Organization Route', () => {
         relationship_type: 'parent',
       },
       {
-        org_name: 'Phoneutria Spider',
-        relationship_type: 'daughter',
-      },
-      {
         org_name: 'Brown Banana',
         relationship_type: 'sister',
       },
       {
         org_name: 'Green Banana',
         relationship_type: 'sister',
+      },
+      {
+        org_name: 'Phoneutria Spider',
+        relationship_type: 'daughter',
       },
       {
         org_name: 'Yellow Banana',

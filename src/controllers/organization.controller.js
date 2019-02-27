@@ -1,11 +1,36 @@
 const HTTPStatus = require('http-status');
 const traverseAndSave = require('../libs/traverseAndSave');
+const generateAndSave = require('../libs/generateAndSave');
 
 async function getOrganization(req, res, next) {
   try {
     const { db, query } = req;
 
-    const result = await db.query(`SELECT DISTINCT organization_id AS org_name, relationship_type FROM organizations_relationship WHERE linked_organization_id="${query.org}" ORDER BY relationship_type ASC`);
+
+    const result = await db.query(`
+      (
+        SELECT DISTINCT organization_name AS org_name, 'parent' AS relationship_type
+        FROM organizations_relationship
+        WHERE parent_organization_name="${query.org}"
+      )
+      UNION
+      (
+        SELECT DISTINCT parent_organization_name AS org_name, 'daughter' AS relationship_type
+        FROM organizations_relationship
+        WHERE organization_name="${query.org}"
+      )
+      UNION
+      (
+        SELECT DISTINCT parent_organization_name AS org_name, 'sister' as relationship_type
+        FROM organizations_relationship
+        WHERE parent_organization_name!='${query.org}' AND organization_name IN (
+          SELECT organization_name
+          FROM organizations_relationship
+          WHERE parent_organization_name='${query.org}'
+        )
+      )
+      ORDER BY org_name
+    `);
 
     return res.json(result);
   } catch (e) {
