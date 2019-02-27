@@ -14,19 +14,19 @@ async function getOrganization(req, res, next) {
 
     const result = await db.query(`
       (
-        SELECT DISTINCT organization_name AS org_name, 'parent' AS relationship_type
+        SELECT organization_name AS org_name, 'parent' AS relationship_type
         FROM organizations_relationship
         WHERE parent_organization_name="${org}"
       )
       UNION
       (
-        SELECT DISTINCT parent_organization_name AS org_name, 'daughter' AS relationship_type
+        SELECT parent_organization_name AS org_name, 'daughter' AS relationship_type
         FROM organizations_relationship
         WHERE organization_name="${org}"
       )
       UNION
       (
-        SELECT DISTINCT parent_organization_name AS org_name, 'sister' as relationship_type
+        SELECT parent_organization_name AS org_name, 'sister' as relationship_type
         FROM organizations_relationship
         WHERE parent_organization_name!='${org}' AND organization_name IN (
           SELECT organization_name
