@@ -25,8 +25,10 @@ async function traverseAndSave(db, data) {
 
         await Promise.all(promises);
 
-        // Traverse daughter
-        queue.push(...daughters);
+        // Traverse daughters
+        // Prefer this over 'queue.push(...daughters)'
+        // due to usage of spread operator is limited by stack space
+        daughters.forEach(daughter => queue.push(daughter));
       }
     }
 
