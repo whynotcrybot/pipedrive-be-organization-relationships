@@ -9,11 +9,11 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "body-parser": "~1.17.1",
+    "body-parser": "^1.18.3",
     "cors": "^2.8.4",
-    "express": "~4.15.2",
+    "express": "^4.16.4",
     "http-status": "^1.2.0",
-    "morgan": "~1.8.1",
+    "morgan": "^1.9.1",
     "mysql": "^2.16.0",
     "sillyname": "^0.1.0"
   },
